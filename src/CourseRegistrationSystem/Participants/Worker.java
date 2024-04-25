@@ -9,11 +9,11 @@ public abstract class Worker extends Participant{
         super(name, ID);
     }
 
-    public void createCourse() {
-        CourseFactory.createCourse();
+    public Course createCourse() {
+        return CourseFactory.createCourse();
     }
     public Course createCourse(String courseType, String courseName, int courseID, int maxStudents){
-       return CourseFactory.createCourse(courseType, courseName, courseID, maxStudents);
+       return CourseFactory.createCourse(courseType, courseName, courseID, maxStudents, this);
     }
 
 

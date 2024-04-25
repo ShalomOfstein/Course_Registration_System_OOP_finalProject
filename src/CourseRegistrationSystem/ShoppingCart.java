@@ -3,7 +3,7 @@ import CourseRegistrationSystem.Courses.Course;
 import java.util.ArrayList;
 
 public class ShoppingCart {
-    private ArrayList<Course> courses;
+    private final ArrayList<Course> courses;
 
     public ShoppingCart(){
         courses = new ArrayList<Course>();

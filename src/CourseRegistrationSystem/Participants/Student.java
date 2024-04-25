@@ -1,23 +1,23 @@
 package CourseRegistrationSystem.Participants;
 
 import CourseRegistrationSystem.Courses.Course;
+import CourseRegistrationSystem.Observer_Design_Pattern.Notification;
 import CourseRegistrationSystem.Observer_Design_Pattern.Observer;
 import CourseRegistrationSystem.ShoppingCart;
-import CourseRegistrationSystem.Observer_Design_Pattern.Notification;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Student extends Participant implements Observer {
 
-    private ShoppingCart shoppingCart ;
-    private ArrayList<Course> courses;
-    private ArrayList<Notification> notifications;
+    private final ShoppingCart shoppingCart ;
+    private final ArrayList<Course> courses;
+    private final ArrayList<Notification> notifications;
 
     public Student(String name, int ID){
         super(name, ID);
         shoppingCart = new ShoppingCart();
         courses = new ArrayList<Course>();
+        notifications = new ArrayList<Notification>();
 
     }
 
@@ -25,14 +25,7 @@ public class Student extends Participant implements Observer {
         try {
             shoppingCart.addCourse(course);
         } catch (IllegalArgumentException e) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Course already in cart\n" +
-                    "Do you want to get a notification when the course is available? (Y/N)");
-            String response = scanner.nextLine();
-            if(response.equals("Y")||response.equals("y")) {
-                course.addObserver(this);
-            }
-
+            System.out.println(e.getMessage());
         }
     }
 
@@ -47,6 +40,12 @@ public class Student extends Participant implements Observer {
         courses.addAll(shoppingCart.getCourses());
         shoppingCart.clearCart();
     }
+    public void registerToCourse(Course course){
+        if(!courses.contains(course)){
+            course.addStudent(this);
+            courses.add(course);
+        }
+    }
 
     public void unregisterCourses(Course course){
         course.removeStudent(this);
@@ -56,6 +55,9 @@ public class Student extends Participant implements Observer {
     @Override
     public void update(Notification note) {
         notifications.add(note);
+    }
+    public ArrayList<Notification> getNotifications(){
+        return notifications;
     }
 
 

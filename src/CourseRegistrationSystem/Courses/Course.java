@@ -1,9 +1,11 @@
 package CourseRegistrationSystem.Courses;
+
 import CourseRegistrationSystem.Observer_Design_Pattern.Notification;
 import CourseRegistrationSystem.Observer_Design_Pattern.Observer;
 import CourseRegistrationSystem.Observer_Design_Pattern.Subject;
-import CourseRegistrationSystem.Participants.Lecturer;
 import CourseRegistrationSystem.Participants.Student;
+import CourseRegistrationSystem.Participants.Worker;
+
 import java.util.ArrayList;
 
 public abstract class Course implements Subject {
@@ -12,38 +14,60 @@ public abstract class Course implements Subject {
     protected int maxStudents;
     protected int numStudents;
     protected ArrayList<Student> students;
-    protected Lecturer lecturer;
-
+    protected ArrayList<Worker> staff;
     protected ArrayList<Observer> observers ;
+    public boolean cancelled = false;
 
-    public Course(String CourseName, int CourseNumber, int MaxStudents, Lecturer lecturer) {
+    public Course(String CourseName, int CourseNumber, int MaxStudents, Worker staffMember1) {
         this.courseName = CourseName;
         this.courseNumber = CourseNumber;
         this.maxStudents = MaxStudents;
         this.numStudents = 0;
-        this.lecturer = lecturer;
         this.students = new ArrayList<Student>();
         this.observers = new ArrayList<Observer>();
+        this.staff = new ArrayList<Worker>();
+        staff.add(staffMember1);
+
     }
     public void addStudent (Student student) {
-        if (getVacancies()>0) {
-            if(students.contains(student)){
-                System.out.println("Student already enrolled in this course");
-                return;
-            }
+        if ((getVacancies()>0)&&(!students.contains(student))) {
+            student.registerToCourse(this);
             students.add(student);
             numStudents++;
         }
     }
     public void removeStudent (Student student) {
         if (students.contains(student)) {
+            student.unregisterCourses(this);
             students.remove(student);
             numStudents--;
         }
-        if(numStudents== maxStudents-1){
+        if(numStudents== maxStudents-1&&!cancelled){
             String message = "Course " + courseName + "(Course Number: "+ courseNumber+ ") is now available";
             this.notifyObservers(message);
         }
+    }
+    public ArrayList<Student> getStudents(){
+        return students;
+    }
+
+    public void cancelCourse(){
+        if(!cancelled){
+            String message = "Course " + courseName + "(Course Number: "+ courseNumber+ ") has been cancelled";
+            this.notifyObservers(message);
+            cancelled = true;
+            for(Student student : students){
+                this.removeStudent(student);
+            }
+        }
+    }
+    public void addStaff(Worker staffMember){
+        if(!staff.contains(staffMember)){
+            staff.add(staffMember);
+        }
+    }
+    public void removeStaff(Worker staffMember){
+        staff.remove(staffMember);
     }
 
     /**
@@ -74,6 +98,8 @@ public abstract class Course implements Subject {
             observer.update(notification);
         }
     }
+
+
 
 
 }
