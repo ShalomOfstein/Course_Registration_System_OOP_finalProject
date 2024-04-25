@@ -1,17 +1,17 @@
 package CourseRegistrationSystem.Factories;
 
-import CourseRegistrationSystem.Courses.*;
+import CourseRegistrationSystem.Courses.Compulsory;
+import CourseRegistrationSystem.Courses.Course;
+import CourseRegistrationSystem.Courses.Elective;
+import CourseRegistrationSystem.Courses.Seminar;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CourseFactory {
-    private static ArrayList<Course> allCourses;
+    private static final HashMap<Integer, Course> allCourses = new HashMap<Integer, Course>();
 
     public static Course createCourse() {
-        if (allCourses == null) {
-            allCourses = new ArrayList<Course>();
-        }
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the course type (Compulsory, Elective, Seminar): ");
         String Type = scanner.nextLine();
@@ -29,30 +29,25 @@ public class CourseFactory {
         }
         return c;
     }
-    public static Course createCourse(String Type, String courseName, int courseID, int maxStudents) {
-        if (allCourses == null) {
-            allCourses = new ArrayList<Course>();
-        }
-        for(Course c : allCourses){
-            if(c.getCourseNumber() == courseID) {
-                System.out.println("Course with this ID already exists");
-                return c;
-            }
+    public static Course createCourse(String Type, String courseName, int courseNumber, int maxStudents) {
+
+        if (allCourses.containsKey(courseNumber)) {
+            return allCourses.get(courseNumber);
         }
         switch (Type) {
             case "Compulsory" -> {
-                Course course = new Compulsory(courseName, courseID, maxStudents);
-                allCourses.add(course);
+                Course course = new Compulsory(courseName, courseNumber, maxStudents);
+                allCourses.put(courseNumber, course);
                 return course;
             }
             case "Elective" -> {
-                Course course = new Elective(courseName, courseID, maxStudents);
-                allCourses.add(course);
+                Course course = new Elective(courseName, courseNumber, maxStudents);
+                allCourses.put(courseNumber, course);
                 return course;
             }
             case "Seminar" -> {
-                Course course = new Seminar(courseName, courseID, maxStudents);
-                allCourses.add(course);
+                Course course = new Seminar(courseName, courseNumber, maxStudents);
+                allCourses.put(courseNumber, course);
                 return course;
             }
             default -> {
@@ -61,13 +56,13 @@ public class CourseFactory {
         }
     }
 
-    public static Course assertNewCourse(int ID) {
-        for(Course c : allCourses){
-            if(c.getCourseNumber() == ID){ //TODO: Check if this is the correct method to compare courses
-                return c;
-            }
+    public static Course getCourse(int courseNumber) {
+        if (allCourses.containsKey(courseNumber)) {
+            return allCourses.get(courseNumber);
         }
-        return null;
+        throw new IllegalArgumentException("Course does not exist");
     }
+
+
 
 }

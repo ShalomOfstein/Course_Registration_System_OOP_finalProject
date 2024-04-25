@@ -1,10 +1,10 @@
 package CourseRegistrationSystem.Factories;
-
 import CourseRegistrationSystem.Participants.*;
-
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class UserFactory {
+    private static final HashMap<Integer, Participant> allUsers = new HashMap<Integer, Participant>();
     public static Participant createUser(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the type of user you want to create (Student / Assistant / Lecturer): ");
@@ -16,16 +16,38 @@ public class UserFactory {
         return createUser(type, name, ID);
     }
     public static Participant createUser(String type, String name, int ID){
-        if(type.equals("Student")){
-            return new Student(name, ID);
+        if(allUsers.containsKey(ID)){
+            return allUsers.get(ID);
         }
-        else if(type.equals("Assistant")){
-            return new Assistant(name, ID);
-        }
-        else if(type.equals("Lecturer")){
-            return new Lecturer(name, ID);
+        switch (type) {
+            case "Student" -> {
+                Student s = new Student(name, ID);
+                allUsers.put(ID, s);
+                return s;
+            }
+            case "Assistant" -> {
+                Assistant a = new Assistant(name, ID);
+                allUsers.put(ID, a);
+                return a;
+            }
+            case "Lecturer" -> {
+                Lecturer l = new Lecturer(name, ID);
+                allUsers.put(ID, l);
+                return l;
+            }
         }
         throw new IllegalArgumentException("Invalid user type");
+    }
+
+    public static Participant getUser(int ID){
+        if(allUsers.containsKey(ID)){
+            return allUsers.get(ID);
+        }
+        throw new IllegalArgumentException("User not found");
+    }
+
+    public static void removeUser(int ID){
+        allUsers.remove(ID);
     }
 
 }

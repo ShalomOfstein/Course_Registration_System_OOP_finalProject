@@ -9,4 +9,10 @@ public abstract class Participant {
         this.ID = ID;
     }
 
+    public int getID() {
+        return ID;
+    }
+    public String getName() {
+        return name;
+    }
 }

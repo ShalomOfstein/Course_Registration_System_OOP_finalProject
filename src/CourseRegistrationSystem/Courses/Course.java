@@ -2,6 +2,7 @@ package CourseRegistrationSystem.Courses;
 import CourseRegistrationSystem.Observer_Design_Pattern.Notification;
 import CourseRegistrationSystem.Observer_Design_Pattern.Observer;
 import CourseRegistrationSystem.Observer_Design_Pattern.Subject;
+import CourseRegistrationSystem.Participants.Lecturer;
 import CourseRegistrationSystem.Participants.Student;
 import java.util.ArrayList;
 
@@ -11,14 +12,16 @@ public abstract class Course implements Subject {
     protected int maxStudents;
     protected int numStudents;
     protected ArrayList<Student> students;
+    protected Lecturer lecturer;
 
     protected ArrayList<Observer> observers ;
 
-    public Course(String CourseName, int CourseNumber, int MaxStudents) {
+    public Course(String CourseName, int CourseNumber, int MaxStudents, Lecturer lecturer) {
         this.courseName = CourseName;
         this.courseNumber = CourseNumber;
         this.maxStudents = MaxStudents;
         this.numStudents = 0;
+        this.lecturer = lecturer;
         this.students = new ArrayList<Student>();
         this.observers = new ArrayList<Observer>();
     }
