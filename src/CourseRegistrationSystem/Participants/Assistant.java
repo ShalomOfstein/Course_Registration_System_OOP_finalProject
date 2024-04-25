@@ -7,4 +7,8 @@ public class Assistant extends Worker{
         super(name, ID);
     }
 
+    public String toString(){
+        return super.toString()+ ", Job: Assistant";
+    }
+
 }

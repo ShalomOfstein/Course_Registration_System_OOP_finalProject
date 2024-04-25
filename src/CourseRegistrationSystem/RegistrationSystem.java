@@ -3,6 +3,7 @@ package CourseRegistrationSystem;
 import CourseRegistrationSystem.Courses.Course;
 import CourseRegistrationSystem.Factories.CourseFactory;
 import CourseRegistrationSystem.Factories.UserFactory;
+import CourseRegistrationSystem.Observer_Design_Pattern.Notification;
 import CourseRegistrationSystem.Participants.Participant;
 import CourseRegistrationSystem.Participants.Student;
 import CourseRegistrationSystem.Participants.Worker;
@@ -38,7 +39,18 @@ public class RegistrationSystem {
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
-
+    }
+    public void createUser(String type,String name, int ID){
+        if(numUsers >= this.maxUsers){
+            System.out.println("Maximum number of users reached");
+            return;
+        }
+        try{
+            Participant user = UserFactory.createUser(type, name, ID);
+            users.add(user);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
     }
     public void removeUser(int ID){
         Participant user = null;
@@ -66,6 +78,16 @@ public class RegistrationSystem {
             System.out.println(user);
         }
     }
+    public Participant getUser(int ID){
+        Participant user = null;
+        try{
+            user = UserFactory.getUser(ID);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        return user;
+    }
+
     public void addCourse(Worker staffMember1, String courseType, String courseName, int courseNumber, int maxStudents){
         staffMember1.createCourse(courseType, courseName, courseNumber, maxStudents);
     }
@@ -82,6 +104,9 @@ public class RegistrationSystem {
             course.addStudent(student);
         }
     }
+    public Course getCourse(int courseNumber){
+        return CourseFactory.getCourse(courseNumber);
+    }
     public void unregisterFromCourse(int courseNumber, int studentID){
         Course course = CourseFactory.getCourse(courseNumber);
         Participant user = UserFactory.getUser(studentID);
@@ -90,11 +115,17 @@ public class RegistrationSystem {
         }
     }
 
-    public void addCourseToCart(int courseNumber, int studentID){
+    public void addCourseToCart(int studentID, int courseNumber){
         Course course = CourseFactory.getCourse(courseNumber);
         Participant user = UserFactory.getUser(studentID);
         if(course != null && user instanceof Student student){
             student.addCourseToCart(course);
+        }
+    }
+    public void registerCoursesInCart(int studentID){
+        Participant user = UserFactory.getUser(studentID);
+        if(user instanceof Student student){
+            student.registerCourses();
         }
     }
     public void removeCourseFromCart(int courseNumber, int studentID){
@@ -104,4 +135,31 @@ public class RegistrationSystem {
             student.removeCourseFromCart(course);
         }
     }
+
+    public void displayNotifications(int studentID) {
+        Participant user = UserFactory.getUser(studentID);
+        if (user instanceof Student student) {
+           ArrayList<Notification> list = student.getNotifications();
+           if(list.isEmpty()){
+               System.out.println(student.getName() +" has no notifications");
+               return;
+           }
+           System.out.println();
+           System.out.println("Notifications for "+student.getName()+":");
+           for (Notification note : list) {
+               System.out.println(note);
+           }
+        }
+    }
+
+    public void printStudentsCourses(int studentID){
+        Participant user = UserFactory.getUser(studentID);
+        if(user instanceof Student student){
+            System.out.println(student.getName()+"'s courses:");
+            for(Course course: student.getCourses()){
+                System.out.println(course.getCourseName());
+            }
+        }
+    }
+
 }

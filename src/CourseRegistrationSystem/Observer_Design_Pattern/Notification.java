@@ -27,7 +27,8 @@ public class Notification {
     }
 
     public String toString(){
-        String ans = "Notification from " + sender.toString() + " to " + receiver.toString() + ": " + message;
+
+        String ans = "Notification from: " + sender.getName() + " To: " + receiver.getName() + " Message: " + message;
         return ans;
     }
 

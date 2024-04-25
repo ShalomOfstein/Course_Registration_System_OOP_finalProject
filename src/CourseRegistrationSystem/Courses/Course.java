@@ -7,6 +7,7 @@ import CourseRegistrationSystem.Participants.Student;
 import CourseRegistrationSystem.Participants.Worker;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public abstract class Course implements Subject {
     protected final String courseName;
@@ -31,15 +32,22 @@ public abstract class Course implements Subject {
     }
     public void addStudent (Student student) {
         if ((getVacancies()>0)&&(!students.contains(student))) {
-            student.registerToCourse(this);
             students.add(student);
+            student.registerToCourse(this);
             numStudents++;
+        } else if(getVacancies()==0&&!cancelled){
+            System.out.println("The course is full. would you like to receive a notification when a spot opens up? (y/n)");
+            Scanner scanner = new Scanner(System.in);
+            String response = scanner.nextLine();
+            if(response.equals("y")||response.equals("Y")){
+                this.addObserver(student);
+            }
         }
     }
     public void removeStudent (Student student) {
         if (students.contains(student)) {
-            student.unregisterCourses(this);
             students.remove(student);
+            student.unregisterCourses(this);
             numStudents--;
         }
         if(numStudents== maxStudents-1&&!cancelled){
@@ -54,11 +62,10 @@ public abstract class Course implements Subject {
     public void cancelCourse(){
         if(!cancelled){
             String message = "Course " + courseName + "(Course Number: "+ courseNumber+ ") has been cancelled";
-            this.notifyObservers(message);
+            this.notifyStudents(message);
             cancelled = true;
-            for(Student student : students){
-                this.removeStudent(student);
-            }
+            students.clear();
+
         }
     }
     public void addStaff(Worker staffMember){
@@ -98,7 +105,18 @@ public abstract class Course implements Subject {
             observer.update(notification);
         }
     }
-
+    public void notifyStudents(String message){
+        for(Student student: students){
+            Notification notification = new Notification(message,this,student);
+            student.update(notification);
+        }
+    }
+    public String toString(){
+        return "Course Name: " + courseName + ", Course Number: " + courseNumber;
+    }
+    public String getName(){
+        return courseName+" Course";
+    }
 
 
 

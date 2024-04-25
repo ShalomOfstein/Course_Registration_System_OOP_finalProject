@@ -15,4 +15,8 @@ public abstract class Participant {
     public String getName() {
         return name;
     }
+
+    public String toString(){
+        return "Name: " + name + ", ID: " + ID;
+    }
 }

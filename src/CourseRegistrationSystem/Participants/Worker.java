@@ -16,5 +16,9 @@ public abstract class Worker extends Participant{
        return CourseFactory.createCourse(courseType, courseName, courseID, maxStudents, this);
     }
 
+    public String toString(){
+        return super.toString();
+    }
+
 
 }

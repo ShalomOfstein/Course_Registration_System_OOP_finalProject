@@ -20,6 +20,9 @@ public class Student extends Participant implements Observer {
         notifications = new ArrayList<Notification>();
 
     }
+    public String getName(){
+        return super.getName();
+    }
 
     public void addCourseToCart(Course course){
         try {
@@ -37,19 +40,19 @@ public class Student extends Participant implements Observer {
         for(Course course: shoppingCart.getCourses()){
             course.addStudent(this);
         }
-        courses.addAll(shoppingCart.getCourses());
+
         shoppingCart.clearCart();
     }
     public void registerToCourse(Course course){
         if(!courses.contains(course)){
-            course.addStudent(this);
             courses.add(course);
+            course.addStudent(this);
         }
     }
 
     public void unregisterCourses(Course course){
-        course.removeStudent(this);
         courses.remove(course);
+        course.removeStudent(this);
     }
 
     @Override
@@ -58,6 +61,14 @@ public class Student extends Participant implements Observer {
     }
     public ArrayList<Notification> getNotifications(){
         return notifications;
+    }
+
+    public ArrayList<Course> getCourses(){
+        return courses;
+    }
+
+    public String toString(){
+        return "Student: "+ super.toString();
     }
 
 
