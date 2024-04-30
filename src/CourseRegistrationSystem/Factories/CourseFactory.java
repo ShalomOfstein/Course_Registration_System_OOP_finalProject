@@ -4,8 +4,9 @@ import CourseRegistrationSystem.Courses.Compulsory;
 import CourseRegistrationSystem.Courses.Course;
 import CourseRegistrationSystem.Courses.Elective;
 import CourseRegistrationSystem.Courses.Seminar;
-import CourseRegistrationSystem.Participants.Worker;
+import CourseRegistrationSystem.Participants.Lecturer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public class CourseFactory {
 
     public static Course createCourse() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the ID of the Worker creating this course: ");
+        System.out.println("Enter the ID of the Lecturer teaching this course: ");
         int ID = scanner.nextInt();
         scanner.nextLine();
         System.out.println("Enter the course type (Compulsory, Elective, Seminar): ");
@@ -26,7 +27,7 @@ public class CourseFactory {
         System.out.println("Enter the maximum number of students: ");
         int maxStudents = scanner.nextInt();
         scanner.nextLine();
-        Worker staffMember1 = (Worker) UserFactory.getUser(ID);
+        Lecturer staffMember1 = (Lecturer) UserFactory.getUser(ID);
         Course c = null;
         try {
             c = createCourse(Type, courseName, courseID, maxStudents, staffMember1);
@@ -35,24 +36,24 @@ public class CourseFactory {
         }
         return c;
     }
-    public static Course createCourse(String Type, String courseName, int courseNumber, int maxStudents, Worker staffMember1) {
+    public static Course createCourse(String Type, String courseName, int courseNumber, int maxStudents, Lecturer lecturer) {
 
         if (allCourses.containsKey(courseNumber)) {
             return allCourses.get(courseNumber);
         }
         switch (Type) {
             case "Compulsory" -> {
-                Course course = new Compulsory(courseName, courseNumber, maxStudents, staffMember1);
+                Course course = new Compulsory(courseName, courseNumber, maxStudents, lecturer);
                 allCourses.put(courseNumber, course);
                 return course;
             }
             case "Elective" -> {
-                Course course = new Elective(courseName, courseNumber, maxStudents, staffMember1);
+                Course course = new Elective(courseName, courseNumber, maxStudents, lecturer);
                 allCourses.put(courseNumber, course);
                 return course;
             }
             case "Seminar" -> {
-                Course course = new Seminar(courseName, courseNumber, maxStudents, staffMember1);
+                Course course = new Seminar(courseName, courseNumber, maxStudents, lecturer);
                 allCourses.put(courseNumber, course);
                 return course;
             }
@@ -72,12 +73,19 @@ public class CourseFactory {
     public static void removeCourse(int courseNumber) {
         if (allCourses.containsKey(courseNumber)) {
             Course course = allCourses.get(courseNumber);
+            course.clearObservers();
+            course.notifyStudents("Course has been cancelled");
+            course.clearStaff();
+            course.clearStudents();
             course.cancelCourse();
             allCourses.remove(courseNumber);
-
         } else {
             throw new IllegalArgumentException("Course does not exist");
         }
+    }
+
+    public static ArrayList<Course> getAllCourses() {
+        return new ArrayList<Course>(allCourses.values());
     }
 
 

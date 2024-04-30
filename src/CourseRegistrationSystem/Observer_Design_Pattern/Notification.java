@@ -1,11 +1,11 @@
 package CourseRegistrationSystem.Observer_Design_Pattern;
 
 public class Notification {
-    private String message;
-    private Subject sender;
-    private Observer receiver;
+    private final String message;
+    private final String sender;
+    private final String receiver;
 
-    public Notification(String message, Subject sender, Observer receiver){
+    public Notification(String message, String sender, String receiver){
         this.message = message;
         this.sender = sender;
         this.receiver = receiver;
@@ -19,17 +19,15 @@ public class Notification {
     public String getMessage(){
         return message;
     }
-    public Subject getSender(){
+    public String getSender(){
         return sender;
     }
-    public Observer getReceiver(){
+    public String getReceiver(){
         return receiver;
     }
 
     public String toString(){
-
-        String ans = "Notification from: " + sender.getName() + " To: " + receiver.getName() + " Message: " + message;
-        return ans;
+        return "Notification from: " + sender+ " To: " + receiver + " Message: " + message;
     }
 
 

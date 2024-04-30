@@ -7,71 +7,103 @@ import CourseRegistrationSystem.ShoppingCart;
 
 import java.util.ArrayList;
 
-public class Student extends Participant implements Observer {
+public class Student extends Participant implements Observer, StudentInterface{
 
     private final ShoppingCart shoppingCart ;
-    private final ArrayList<Course> courses;
+    private final ArrayList<Course> registeredCourses;
     private final ArrayList<Notification> notifications;
 
     public Student(String name, int ID){
         super(name, ID);
         shoppingCart = new ShoppingCart();
-        courses = new ArrayList<Course>();
+        registeredCourses = new ArrayList<Course>();
         notifications = new ArrayList<Notification>();
 
     }
-    public String getName(){
-        return super.getName();
+
+    /******************************************************************************************
+     * getters
+     */
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+    public ArrayList<Course> getCourses() {
+        return registeredCourses;
+    }
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
     }
 
-    public void addCourseToCart(Course course){
-        try {
-            shoppingCart.addCourse(course);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void removeCourseFromCart(Course courseName){
-        shoppingCart.removeCourse(courseName);
-    }
-
-    public void registerCourses(){
-        for(Course course: shoppingCart.getCourses()){
-            course.addStudent(this);
-        }
-
-        shoppingCart.clearCart();
-    }
-    public void registerToCourse(Course course){
-        if(!courses.contains(course)){
-            courses.add(course);
-            course.addStudent(this);
-        }
-    }
-
-    public void unregisterCourses(Course course){
-        courses.remove(course);
-        course.removeStudent(this);
-    }
+    /******************************************************************************************
+     * methods to implement the observer pattern
+     */
 
     @Override
     public void update(Notification note) {
         notifications.add(note);
     }
-    public ArrayList<Notification> getNotifications(){
-        return notifications;
+    /******************************************************************************************
+     * methods to add and remove courses from the shopping cart
+     */
+    public void addCourseToCart(Course course) {
+        try {
+            if(registeredCourses.contains(course)){
+                throw new IllegalArgumentException("Already registered to "+course.getCourseName());
+            }
+            shoppingCart.addCourse(course);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void removeCourseFromCart(Course courseName) {
+        shoppingCart.removeCourse(courseName);
+    }
+    /******************************************************************************************
+     * methods to register and unregister from courses
+     */
+    public void registerToCoursesInCart() {
+        if(shoppingCart.isEmpty()){
+            System.out.println("No courses in cart");
+            return;
+        }
+        System.out.println("Registered to: ");
+        for (Course course : shoppingCart.getCourses()) {
+            if(registeredCourses.contains(course)){
+                System.out.println(course.getCourseName() + " already registered");
+                continue;
+            }
+            course.addStudent(this);
+            registeredCourses.add(course);
+            System.out.println(course.getCourseName());
+        }
+        shoppingCart.clearCart();
     }
 
-    public ArrayList<Course> getCourses(){
-        return courses;
+    /******************************************************************************************
+     * methods to register and unregister from courses
+     */
+    @Override
+    public void registerToCourse(Course course){
+        if(!registeredCourses.contains(course)){
+            registeredCourses.add(course);
+        }
+    }
+    public void unregisterFromCourse(Course course){
+        registeredCourses.remove(course);
     }
 
-    public String toString(){
-        return "Student: "+ super.toString();
+    /******************************************************************************************
+     * method to display notifications
+     */
+    public void displayNotifications() {
+        if(notifications.isEmpty()){
+            System.out.println("No notifications for "+getName());
+            return;
+        }
+        System.out.println("Notifications for " + getName() + ":");
+        for (Notification note : notifications) {
+            System.out.println("From "+note.getSender()+" : "+note.getMessage());
+        }
     }
-
-
-
 
 }
