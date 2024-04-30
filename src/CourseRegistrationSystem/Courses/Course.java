@@ -134,98 +134,16 @@ public abstract class Course implements Subject {
     public void cancelCourse() {
         cancelled = true;
     }
-
-
+    /***************************************************************************************************
+     * the methods to print the course details
+     */
+    public String toString() {
+        return "Course Name: " + courseName + "; Course Number: " + courseNumber + "; Lecturer: " + lecturer.getName();
+    }
 
 
 
 
 }
-//    public void addStudent (Student student) {
-//        if ((getVacancies()>0)&&(!students.contains(student))) {
-//            students.add(student);
-//            student.registerToCourse(this);
-//            numStudents++;
-//        } else if(getVacancies()==0&&!cancelled){
-//            System.out.println("The course is full. would you like to receive a notification when a spot opens up? (y/n)");
-//            Scanner scanner = new Scanner(System.in);
-//            String response = scanner.nextLine();
-//            if(response.equals("y")||response.equals("Y")){
-//                this.addObserver(student);
-//            }
-//        }
-//    }
-//    public void removeStudent (Student student) {
-//        if (students.contains(student)) {
-//            students.remove(student);
-//            student.unregisterCourses(this);
-//            numStudents--;
-//        }
-//        if(numStudents== maxStudents-1&&!cancelled){
-//            String message = "Course " + courseName + "(Course Number: "+ courseNumber+ ") is now available";
-//            this.notifyObservers(message);
-//        }
-//    }
-//    public ArrayList<Student> getStudents(){
-//        return students;
-//    }
-//
-//    public void cancelCourse(){
-//        if(!cancelled){
-//            String message = "Course " + courseName + "(Course Number: "+ courseNumber+ ") has been cancelled";
-//            this.notifyStudents(message);
-//            cancelled = true;
-//            students.clear();
-//
-//        }
-//    }
-//    public void addStaff(Worker staffMember){
-//        if(!staff.contains(staffMember)){
-//            staff.add(staffMember);
-//        }
-//    }
-//    public void removeStaff(Worker staffMember){
-//        staff.remove(staffMember);
-//    }
-//
-//    /**
-//     * Getters
-//     */
-//    public String getCourseName() {
-//        return courseName;
-//    }
-//    public int getCourseNumber() {
-//        return courseNumber;
-//    }
-//    public int getVacancies() {
-//        return maxStudents - numStudents;
-//    }
-//
-//    @Override
-//    public void addObserver(Observer observer) {
-//        observers.add(observer);
-//    }
-//    @Override
-//    public void removeObserver(Observer observer) {
-//        observers.remove(observer);
-//    }
-//    @Override
-//    public void notifyObservers(String message) {
-//        for(Observer observer: observers){
-//            Notification notification = new Notification(message,this,observer);
-//            observer.update(notification);
-//        }
-//    }
-//    public void notifyStudents(String message){
-//        for(Student student: students){
-//            Notification notification = new Notification(message,this,student);
-//            student.update(notification);
-//        }
-//    }
-//    public String toString(){
-//        return "Course Name: " + courseName + ", Course Number: " + courseNumber;
-//    }
-//    public String getName(){
-//        return courseName+" Course";
-//    }
+
 

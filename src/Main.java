@@ -21,14 +21,15 @@ public class Main {
         if(response.equals("y")||response.equals("Y")){
             loadData(facade, system);
         }
-        System.out.println("""
+
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("""
                             Do you want to create a new user or sign in?
                             1. Create a new user
                             2. Sign in
                             To exit the system, enter 0
                             """);
-        int choice = -1;
-        while (choice != 0) {
             choice = scanner.nextInt();
             scanner.nextLine();
             if (choice == 1) {
@@ -110,85 +111,103 @@ public class Main {
     }
     public static void registerNewUser(RegistrationSystemFacade facade, RegistrationSystem system){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("""
-                            What type of user would you like to create?
-                            1. Student
-                            2. Lecturer
-                            3. Assistant
-                            To return to the main menu, enter 0
+        int userType = -1;
+        while(userType!=0){
+            System.out.println("""
+                            Register new user page:
+                                What type of user would you like to create?
+                                1. Student
+                                2. Lecturer
+                                3. Assistant
+                                To return to the main menu, enter 0
                             """);
-        int userType = scanner.nextInt();
-        scanner.nextLine();
-        if(userType == 0){
-            return;
-        }
-        System.out.println("Enter your name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter your ID: ");
-        int ID = scanner.nextInt();
-        scanner.nextLine();
-        switch (userType) {
-            case 1 -> {
-                system.registerNewUser("Student", name, ID);
-                studentMenu(facade, system, ID);
-            }case 2 -> {
-                system.registerNewUser("Lecturer", name, ID);
-                lecturerMenu(facade, system, ID);
-            }case 3 -> {
-                system.registerNewUser("Assistant", name, ID);
-                assistantMenu(facade, system, ID);
+            userType = scanner.nextInt();
+            scanner.nextLine();
+            if(userType==0){
+                return;
             }
-            default -> {
-                System.out.println("Invalid input");
+            System.out.println("Enter your name: ");
+            String name = scanner.nextLine();
+            System.out.println("Enter your ID: ");
+            int ID = scanner.nextInt();
+            scanner.nextLine();
+            switch (userType) {
+                case 1 -> {
+                    system.registerNewUser("Student", name, ID);
+                    System.out.println("Welcome " + name);
+                    studentMenu(facade, system, ID);
+                }
+                case 2 -> {
+                    system.registerNewUser("Lecturer", name, ID);
+                    System.out.println("Welcome " + name);
+                    lecturerMenu(facade, system, ID);
+                }
+                case 3 -> {
+                    system.registerNewUser("Assistant", name, ID);
+                    System.out.println("Welcome " + name);
+                    assistantMenu(facade, system, ID);
+                }
+                default -> {
+                    System.out.println("Invalid input");
+                }
             }
         }
     }
     public static void signIn(RegistrationSystemFacade facade,RegistrationSystem system){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("""
-                            How would you like to sign in?
-                            1. Student
-                            2. Lecturer
-                            3. Assistant
-                            To return to the main menu, enter 0
-                            """);
-        int userType = scanner.nextInt();
-        scanner.nextLine();
-        if(userType == 0){
-            return;
-        }
-        System.out.println("Enter your name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter your ID: ");
-        int ID = scanner.nextInt();
-        scanner.nextLine();
-        try {
-            Participant user = UserFactory.getUser(ID);
-            if(user.getName().equals(name)) {
-                System.out.println("Welcome " + name);
-            }else{
-                System.out.println("Invalid ID or name");
+        int userType = -1;
+        while(userType!=0) {
+            System.out.println("""
+                    Sign in page:
+                        How would you like to sign in?
+                        1. Student
+                        2. Lecturer
+                        3. Assistant
+                    To return to the main menu, enter 0
+                    """);
+            userType = scanner.nextInt();
+            scanner.nextLine();
+            if(userType==0){
+                return;
             }
-        }catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            return;
-        }
-        switch (userType) {
-            case 1 -> {
-                studentMenu(facade, system, ID);
-            }case 2 -> {
-                lecturerMenu(facade, system, ID);
-            }case 3 -> {
-                assistantMenu(facade, system, ID);
+            System.out.println("Enter your name: ");
+            String name = scanner.nextLine();
+            System.out.println("Enter your ID: ");
+            int ID = scanner.nextInt();
+            scanner.nextLine();
+            try {
+                Participant user = UserFactory.getUser(ID);
+                if (user.getName().equals(name)) {
+                    System.out.println("Welcome " + name);
+                    switch (userType) {
+                        case 1 -> {
+                            studentMenu(facade, system, ID);
+                        }
+                        case 2 -> {
+                            lecturerMenu(facade, system, ID);
+                        }
+                        case 3 -> {
+                            assistantMenu(facade, system, ID);
+                        }
+                        default -> {
+                            System.out.println("Invalid input");
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid ID or name");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return;
             }
-            default -> {
-                System.out.println("Invalid input");
-            }
+
         }
     }
     public static void studentMenu(RegistrationSystemFacade facade, RegistrationSystem system, int ID){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("""
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("""
                 Welcome to the student menu! What would you like to do?
                 1. Add a course to your cart
                 2. Remove a course from your cart
@@ -198,8 +217,6 @@ public class Main {
                 6. View notifications
                 0. Exit
                 """);
-        int choice = -1;
-        while (choice != 0) {
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -239,7 +256,9 @@ public class Main {
     }
     public static void lecturerMenu(RegistrationSystemFacade facade, RegistrationSystem system, int ID){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("""
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("""
                 Welcome to the lecturer menu! What would you like to do?
                 1. Create a course
                 2. Remove a course
@@ -247,8 +266,6 @@ public class Main {
                 4. View all courses
                 0. Exit
                 """);
-        int choice = -1;
-        while (choice != 0) {
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -278,7 +295,9 @@ public class Main {
     }
     public static void assistantMenu(RegistrationSystemFacade facade, RegistrationSystem system, int ID){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("""
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("""
                 Welcome to the assistant menu! What would you like to do?
                 1. Create a course
                 2. Remove a course
@@ -287,8 +306,6 @@ public class Main {
                 5. View all courses
                 0. Exit
                 """);
-        int choice = -1;
-        while (choice != 0) {
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {

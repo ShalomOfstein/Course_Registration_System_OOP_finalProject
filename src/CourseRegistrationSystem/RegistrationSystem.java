@@ -5,6 +5,7 @@ import CourseRegistrationSystem.Factories.CourseFactory;
 import CourseRegistrationSystem.Factories.UserFactory;
 import CourseRegistrationSystem.Participants.*;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RegistrationSystem {
@@ -36,6 +37,9 @@ public class RegistrationSystem {
             Participant user = UserFactory.getUser(userID);
             Course course = CourseFactory.getCourse(courseNumber);
             if(user instanceof Student student){
+                if(course.getStudents().contains(student)){
+                    throw new IllegalArgumentException("Student is already registered to this course");
+                }
                 if(course.getVacancies()>0) {
                     student.registerToCourse(course);
                     course.addStudent(student);
@@ -137,6 +141,7 @@ public class RegistrationSystem {
 
                     try {
                         CourseFactory.removeCourse(courseNumber);
+
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
@@ -264,8 +269,13 @@ public class RegistrationSystem {
         try{
             Participant user = UserFactory.getUser(lecturerID);
             if(user instanceof Lecturer lecturer){
-                for(Course course: lecturer.getCoursesTaught()){
-                    System.out.println(course);
+                ArrayList<Course> courses = lecturer.getCoursesTaught();
+                if(courses.isEmpty()) {
+                    System.out.println("No courses taught by " + lecturer.getName());
+                }else {
+                    for (Course course : courses) {
+                        System.out.println(course);
+                    }
                 }
             }else {
                 throw new IllegalArgumentException("User is not a lecturer");
