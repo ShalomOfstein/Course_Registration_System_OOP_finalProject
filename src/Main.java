@@ -24,43 +24,29 @@ public class Main {
         int choice = -1;
         while (choice != 0) {
             System.out.println("""
-                            
-                            Do you want to create a new user or sign in?
-                                1. Create a new user
-                                2. Sign in
-                                To exit the system, enter 0""");
-            choice = scanner.nextInt();
-            scanner.nextLine();
-            if (choice == 1) {
-                registerNewUser(facade, system);
-            } else if (choice == 2) {
-                signIn(facade, system);
-            } else if (choice == 0) {
-                System.out.println("Exiting System!");
-                return;
-            } else {
-                System.out.println("Invalid input");
+                                                
+                    Do you want to create a new user or sign in?
+                        1. Create a new user
+                        2. Sign in
+                        To exit the system, enter 0""");
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice == 1) {
+                    registerNewUser(facade, system);
+                } else if (choice == 2) {
+                    signIn(facade, system);
+                } else if (choice == 0) {
+                    System.out.println("Exiting System!");
+                    return;
+                } else {
+                    System.out.println("Invalid input");
+                }
+            }catch (Exception e){
+                System.out.println("Invalid input ");
+                scanner.nextLine();
             }
         }
-
-
-//        system.displayUsers();
-
-
-//        system.addCourseToCart(1, 102);
-//        system.addCourseToCart(1, 103);
-//        system.addCourseToCart(1, 104);
-//        system.addCourseToCart(1, 105);
-//        system.registerCoursesInCart(1);
-
-
-//        system.displayNotifications(1);
-//        system.displayNotifications(2);
-//        system.displayNotifications(3);
-//        system.displayNotifications(4);
-//        system.displayNotifications(5);
-
-//        system.printStudentsCourses(1);
 
     }
 
