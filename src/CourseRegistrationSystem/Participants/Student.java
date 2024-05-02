@@ -47,9 +47,6 @@ public class Student extends Participant implements Observer, StudentInterface{
      */
     public void addCourseToCart(Course course) {
         try {
-            if(registeredCourses.contains(course)){
-                throw new IllegalArgumentException("Already registered to "+course.getCourseName());
-            }
             shoppingCart.addCourse(course);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

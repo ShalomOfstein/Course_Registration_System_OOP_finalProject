@@ -17,7 +17,10 @@ public class RegistrationSystemFacade {
 
     public void register(int userID, int courseNumber){
         registrationSystem.registerToCourse(userID, courseNumber);
+    }
+    public void register(int userID, int courseNumber, boolean receiveNotification){
 
+        registrationSystem.registerToCourse(userID, courseNumber, receiveNotification);
     }
 
     public void unregister(int userID, int courseNumber){

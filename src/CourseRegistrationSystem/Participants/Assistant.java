@@ -3,8 +3,7 @@ package CourseRegistrationSystem.Participants;
 import CourseRegistrationSystem.Courses.Course;
 import CourseRegistrationSystem.Factories.CourseFactory;
 
-public class Assistant extends Worker{
-
+public class Assistant extends Worker implements AdminInterface{
 
     public Assistant(String name, int ID){
         super(name, ID);

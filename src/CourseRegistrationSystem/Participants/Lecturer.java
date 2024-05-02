@@ -5,7 +5,7 @@ import CourseRegistrationSystem.Factories.CourseFactory;
 
 import java.util.ArrayList;
 
-public class Lecturer extends Worker{
+public class Lecturer extends Worker implements AdminInterface{
     private final ArrayList<Course> coursesTaught;
 
     public Lecturer(String name, int ID){

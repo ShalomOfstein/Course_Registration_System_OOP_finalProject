@@ -15,8 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("""
                             Welcome to the Course Registration System!
-                            do you want to load pre-existing data? (y/n)
-                            """);
+                            do you want to load pre-existing data? (y/n)""");
         String response = scanner.nextLine();
         if(response.equals("y")||response.equals("Y")){
             loadData(facade, system);
@@ -25,11 +24,11 @@ public class Main {
         int choice = -1;
         while (choice != 0) {
             System.out.println("""
+                            
                             Do you want to create a new user or sign in?
-                            1. Create a new user
-                            2. Sign in
-                            To exit the system, enter 0
-                            """);
+                                1. Create a new user
+                                2. Sign in
+                                To exit the system, enter 0""");
             choice = scanner.nextInt();
             scanner.nextLine();
             if (choice == 1) {
@@ -66,11 +65,24 @@ public class Main {
     }
 
     public static void loadData(RegistrationSystemFacade facade, RegistrationSystem system){
+        System.out.println("Loading pre-existing data");
+        System.out.println("-> Adding 101 students");
+        System.out.println("   this should fail as the system can only hold 100 students");
+        for(int i=0 ; i<101 ; i++){
+            system.registerNewUser("Student", "Student"+i, i);
+        }
+        System.out.println("-> Removing 101 students");
+        System.out.println("   this should fail as the last student was not created");
+        for(int i=0; i<101 ; i++){
+            system.removeUser(i);
+        }
+
         system.registerNewUser("Student","Alice",1); //#1
         system.registerNewUser("Student", "Bob", 2); //#2
         system.registerNewUser("Student", "Charlie", 3); //#3
         system.registerNewUser("Student", "David", 4); //#4
         system.registerNewUser("Student", "Eve", 5); //#5
+        System.out.println("-> Added 5 students: Alice (ID: 1), Bob (ID: 2), Charlie (ID: 3), David (ID: 4), Eve (ID: 5)");
 
         //create the staff members
         system.registerNewUser("Lecturer", "Ivan",6); //#6
@@ -78,49 +90,59 @@ public class Main {
         system.registerNewUser("Lecturer", "Kate",8); //#8
         system.registerNewUser("Assistant", "Linda",9); //#9
         system.registerNewUser("Assistant", "Mike",10); //#10
+        System.out.println("-> Added 3 lecturers: Ivan (ID: 6), John (ID: 7), Kate (ID: 8) and 2 assistants: Linda (ID: 9), Mike (ID: 10)");
 
         system.createCourse("Elective", "Math", 101, 3,6);
         system.createCourse("Seminar", "Science", 102, 10,7);
         system.createCourse("Compulsory", "History", 103, 10,8);
         system.createCourse("Elective", "English", 104, 10,6);
         system.createCourse( "Seminar", "Art", 105, 10,7);
+        System.out.println("-> Added 5 courses: Math 101, Science 102, History 103, English 104, Art 105");
 
         facade.register(1, 101);
         facade.register(2, 101);
         facade.register(3, 101);
-        System.out.println("********* Registering David to course 101. This should fail as the course is full *********");
-        facade.register(4, 101);
-        System.out.println("********* Registering Eve to course 101. This should fail as the course is full *********");
-        facade.register(5, 101);
+//        System.out.println("********* Registering David to course 101. This should fail as the course is full *********");
+        facade.register(4, 101, true);
+//        System.out.println("********* Registering Eve to course 101. This should fail as the course is full *********");
+        facade.register(5, 101, true);
+        System.out.println(" ! Math 101 is full, only Alice, Bob and Charlie are registered to it");
+        System.out.println(" ! David and Eve tried to sign up to Math 101 but it was full and they opted to receive a notification when there is room");
 
 
         facade.register(2, 102);
         facade.register(3, 103);
         facade.register(4, 104);
         facade.register(5, 105);
+        System.out.println("-> Bob is registered to Science 102, Charlie is registered to History 103, David is registered to English 104, Eve is registered to Art 105");
 
 
         facade.unregister(1, 101);
         system.removeCourse(6,102);
         system.removeCourse(9,103);
+        System.out.println(" ! Alice unregistered from Math 101, So David and Eve should have received a notification");
+        System.out.println(" ! Ivan removed Science 102, John removed History 103, so Bob and Charlie should have received a notification");
+
 
         system.createCourse("Seminar", "Science", 102, 10,7);
         system.createCourse("Compulsory", "History", 103, 10,8);
         facade.register(2, 102);
         facade.register(3, 103);
+        System.out.println("-> John added Science 102 and Kate added History 103, Bob and Charlie re-registered to them");
+
     }
     public static void registerNewUser(RegistrationSystemFacade facade, RegistrationSystem system){
         Scanner scanner = new Scanner(System.in);
         int userType = -1;
         while(userType!=0){
             System.out.println("""
+                            
                             Register new user page:
                                 What type of user would you like to create?
                                 1. Student
                                 2. Lecturer
                                 3. Assistant
-                                To return to the main menu, enter 0
-                            """);
+                                To return to the main menu, enter 0""");
             userType = scanner.nextInt();
             scanner.nextLine();
             if(userType==0){
@@ -158,13 +180,13 @@ public class Main {
         int userType = -1;
         while(userType!=0) {
             System.out.println("""
-                    Sign in page:
+                        
+                   Sign in page:
                         How would you like to sign in?
                         1. Student
                         2. Lecturer
                         3. Assistant
-                    To return to the main menu, enter 0
-                    """);
+                    To return to the main menu, enter 0""");
             userType = scanner.nextInt();
             scanner.nextLine();
             if(userType==0){
@@ -208,15 +230,15 @@ public class Main {
         int choice = -1;
         while (choice != 0) {
             System.out.println("""
+                
                 Welcome to the student menu! What would you like to do?
-                1. Add a course to your cart
-                2. Remove a course from your cart
-                3. Register for courses in your cart
-                4. View your courses
-                5. View all courses
-                6. View notifications
-                0. Exit
-                """);
+                    1. Add a course to your cart
+                    2. Remove a course from your cart
+                    3. Register for courses in your cart
+                    4. View your courses
+                    5. View all courses
+                    6. View notifications
+                    0. Exit""");
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -259,13 +281,13 @@ public class Main {
         int choice = -1;
         while (choice != 0) {
             System.out.println("""
+                
                 Welcome to the lecturer menu! What would you like to do?
-                1. Create a course
-                2. Remove a course
-                3. View your courses
-                4. View all courses
-                0. Exit
-                """);
+                    1. Create a course
+                    2. Remove a course
+                    3. View your courses
+                    4. View all courses
+                    0. Exit""");
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -298,14 +320,14 @@ public class Main {
         int choice = -1;
         while (choice != 0) {
             System.out.println("""
+                
                 Welcome to the assistant menu! What would you like to do?
-                1. Create a course
-                2. Remove a course
-                3. Add yourself as an assistant to a course
-                4. Remove yourself as an assistant from a course
-                5. View all courses
-                0. Exit
-                """);
+                    1. Create a course
+                    2. Remove a course
+                    3. Add yourself as an assistant to a course
+                    4. Remove yourself as an assistant from a course
+                    5. View all courses
+                    0. Exit""");
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {

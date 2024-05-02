@@ -81,7 +81,7 @@ public class CourseFactory {
             for(Student student: course.getStudents()){
                 student.unregisterFromCourse(course);
             }
-            course.notifyStudents("Course has been cancelled");
+            course.notifyStudents("Course "+course.getCourseName()+" "+ course.getCourseNumber()+ " by: "+ course.getLecturer().getName() +", has been cancelled");
             course.clearStaff();
             course.clearStudents();
             course.cancelCourse();

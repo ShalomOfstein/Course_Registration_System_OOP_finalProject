@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 public class RegistrationSystem {
     private static RegistrationSystem instance = null;
+    private final int maxUsers = 100;
+    private int numOfUsers;
 
 
 
@@ -20,7 +22,7 @@ public class RegistrationSystem {
      * to access the instance of the class, the getInstance method must be called
      */
     private RegistrationSystem(){
-
+        numOfUsers = 0;
     }
     public static RegistrationSystem getInstance(){
         if(instance == null){
@@ -62,6 +64,29 @@ public class RegistrationSystem {
             System.out.println(e.getMessage());
         }
     }
+    public void registerToCourse(int userID, int courseNumber, boolean waitList){
+        try {
+            Participant user = UserFactory.getUser(userID);
+            Course course = CourseFactory.getCourse(courseNumber);
+            if(user instanceof Student student){
+                if(course.getStudents().contains(student)){
+                    throw new IllegalArgumentException("Student is already registered to this course");
+                }
+                if(course.getVacancies()>0) {
+                    student.registerToCourse(course);
+                    course.addStudent(student);
+                }else{
+                    if(waitList){
+                        course.addObserver(student);
+                    }
+                }
+            }else {
+                throw new IllegalArgumentException("User is not a student");
+            }
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void unregisterFromCourse(int userID, int courseNumber){
         try {
@@ -87,7 +112,12 @@ public class RegistrationSystem {
      */
     public void registerNewUser(String type, String name, int ID){
         try {
-            UserFactory.createUser(type, name, ID);
+            if(numOfUsers>=maxUsers){
+                throw new IllegalArgumentException("Maximum number of users reached");
+            }else {
+                UserFactory.createUser(type, name, ID);
+                numOfUsers++;
+            }
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
@@ -105,6 +135,7 @@ public class RegistrationSystem {
                 }
             }
             UserFactory.removeUser(ID);
+            numOfUsers--;
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
@@ -161,6 +192,19 @@ public class RegistrationSystem {
             if(user instanceof Student student){
                 Course c = CourseFactory.getCourse(courseID);
                 try{
+                    if(student.getCourses().contains(c)){
+                        throw new IllegalArgumentException("Already registered to "+c.getCourseName());
+                    }
+                    if (c.getVacancies()<1){
+                        System.out.println("Course is full, Would you like to be added to the wait list and get notified when it becomes available? (Y/N)");
+                        Scanner scanner = new Scanner(System.in);
+                        String response = scanner.nextLine();
+                        if(response.equals("Y")||response.equals("y")){
+                            c.addObserver(student);
+                            System.out.println("Added to wait list");
+                        }
+                        return;
+                    }
                     student.addCourseToCart(c);
                     System.out.println("Course " + c.getCourseName() + " added to cart");
                 }
@@ -254,7 +298,12 @@ public class RegistrationSystem {
         try{
             Participant user = UserFactory.getUser(studentID);
             if(user instanceof Student student){
-                for(Course course: student.getCourses()){
+                ArrayList<Course> courses = student.getCourses();
+                if(courses.isEmpty()){
+                    System.out.println(student.getName()+" is not signed up for any courses");
+                    return;
+                }
+                for(Course course: courses){
                     System.out.println(course);
                 }
             }else {
